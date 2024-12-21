@@ -1,0 +1,30 @@
+channels:
+- conda-forge
+- bioconda
+
+dependencies:
+- r-base=4.3
+- r-essentials=4.3
+- r-devtools
+- r-writexls
+- r-ggrepel
+- r-ggpubr
+- r-dt
+- r-pheatmap
+- r-survminer
+- r-seurat
+- r-clustree
+- bioconductor-fgsea
+- r-colortools
+- bioconductor-txdb.hsapiens.ucsc.hg19.knowngene
+- bioconductor-genomeinfodb
+- bioconductor-complexheatmap
+- bioconductor-biocneighbors
+- bioconductor-fgsea
+- bioconductor-clusterprofiler
+- bioconductor-summarizedexperiment=1.32.0
+- bioconductor-singscore
+- r-ggblend
+- r-cairo
+
+ 
