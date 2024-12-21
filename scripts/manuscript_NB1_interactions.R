@@ -4,8 +4,7 @@ library(Seurat)
 library(ggplot2)
 library(cowplot)
 library(CellChat)
-# seurat_grp_merged_list <- readRDS("ST_NB_Joachim/temp/data/seurat_grp_merged_list.rds")
-# seurat_grp_merged_list$NB2Pre<- NULL
+seurat_grp_merged_list <- readRDS("data/ST_NB_seurat.rds")
 
 # Color palette
 ###############
@@ -29,7 +28,7 @@ col_palette_hr <- c(
 # Analyse cellchat & Plot circusplot
 ######################################
 
-cellchat<- readRDS("ST_NB_Joachim/temp/data/cellchat_list_ST_sct_truncateMean_0.2_sec_sig_only_cell_type_hr.rds")
+cellchat<- readRDS("temp/cellchat_list_ST_sct_truncateMean_0.2_cell_type_hr_secreted_sig_only_20241209.rds")
 
 # Show all pathways
 pathways.show <-  cellchat$NB1Post@netP$pathways 
@@ -38,7 +37,6 @@ pathways.show <-  cellchat$NB1Post@netP$pathways
 par(mfrow=c(1,1), xpd = TRUE) # `xpd = TRUE` should be added to show the title
 
 pdf("results/figs/manuscript_fig3_chord.pdf")
-# netVisual_aggregate(cellchat$NB1Post, signaling = pathways.show, signaling.name = "All", targets.use = "NE4",layout = "circle",remove.isolate = T)
 netVisual_aggregate(cellchat$NB1Post, signaling = pathways.show, signaling.name = "All", targets.use = "NE4",layout = "chord",remove.isolate = T, color.use = col_palette_hr)
 dev.off()
 
@@ -63,8 +61,8 @@ p_zoom_macro_NE4<- SpatialDimPlot(seurat_tmp, images = "NB1Post2", crop = T, gro
 
 # Barplot top 10 DGE in NE4
 ###########################
-DE_clust2<- readxl::read_excel("../ST_NB/ST_NB_Joachim/temp/tables/de_markers_ST_seurat_clust.xlsx",sheet = "NB1Post")
-DE_clust2<- DE_clust2[DE_clust2$cluster=="C7",] # C7 ~ NE4
+DE_clust2<- readxl::read_excel("temp/de_hr_filtered.xlsx",sheet = "NB1Post")
+DE_clust2<- DE_clust2[DE_clust2$cluster=="NE4",]
 DE_clust2<- DE_clust2[1:10,] # Top 10
 DE_clust2$gene<- factor(DE_clust2$gene, levels = rev(DE_clust2$gene))
 p_bp<-ggplot(data=DE_clust2, aes(x=gene, y=-log10(p_val_adj))) +
@@ -97,7 +95,7 @@ p_bp<-ggplot(data=DE_clust2, aes(x=gene, y=-log10(p_val_adj))) +
 ######################################
 
 Lig<- readRDS(file = "downloads/HGNC/Lig.rds") # All "Receptor ligands" from HGNC
-DE_clust2<- readxl::read_excel("../ST_NB/ST_NB_Joachim/temp/tables/de_hr_filtered.xlsx",sheet = "NB1Post")
+DE_clust2<- readxl::read_excel("temp/de_hr_filtered.xlsx",sheet = "NB1Post")
 DE_clust2<- DE_clust2[DE_clust2$cluster=="Macro"&DE_clust2$gene%in%Lig$Approved.symbol,]
 DE_clust2<- DE_clust2[1:10,] # Top 10
 DE_clust2$gene<- factor(DE_clust2$gene, levels = rev(DE_clust2$gene))
@@ -175,14 +173,7 @@ p_chr<- plot_grid(
   p_genes$NB1Post2$CALCB, p_genes$NB1Post2$WEE1,
   ncol = 2
 )
-ggsave("results/figs/manuscript_fig3_chr_8_11_genes.pdf", p_chr, width = 0.6*178, height = 0.15*265, units = "mm")
-
-# p_diff<- plot_grid(
-#   p_genes$NB1Post2$NTRK1, 
-#   p_genes$NB1Post2$`NKX6-1`,
-#   ncol = 1
-# )
-# ggsave("results/figs/manuscript_fig3_diff_genes.pdf", p_diff, width = 0.5*178, height = 0.25*265, units = "mm")
+ggsave("results/figs/manuscript_fig5_chr_8_11_genes.pdf", p_chr, width = 0.6*178, height = 0.15*265, units = "mm")
 
 p_diff<- plot_grid(
   p_genes$NB1Post2$WEE1, p_genes$NB1Post2$`NKX6-1`, p_genes$NB1Post2$NTRK1,
@@ -197,14 +188,14 @@ p_CCL18<- plot_grid(
   p_genes$NB1Post2$ITGAV, p_genes$NB1Post2$SDC4,
   ncol = 2
 )
-ggsave("results/figs/manuscript_fig3_CCL18.pdf", p_CCL18, width = 178, height = 0.5*265, units = "mm")
+ggsave("results/figs/manuscript_fig5_CCL18.pdf", p_CCL18, width = 178, height = 0.5*265, units = "mm")
 
 p<- plot_grid(
   plot_grid(plotlist = p_genes$NB1Post1, ncol = 4),
   plot_grid(plotlist = p_genes$NB1Post2, ncol = 4),
   ncol=1
 )
-ggsave("results/figs/manuscript_fig3_CCL18_genes.pdf", p, width = 178, height = 265, units = "mm")
+ggsave("results/figs/manuscript_fig5_CCL18_genes.pdf", p, width = 178, height = 265, units = "mm")
 
 p<- plot_grid(
   p_zoom_macro_NE4,
@@ -212,6 +203,6 @@ p<- plot_grid(
   p_bp_macro,
   ncol = 1
 )
-ggsave("results/figs/manuscript_fig3_zoom_barplot.pdf", p, width = 0.3*178, height = 0.45*265, units = "mm")
+ggsave("results/figs/manuscript_fig5_zoom_barplot.pdf", p, width = 0.3*178, height = 0.45*265, units = "mm")
 
 

@@ -6,7 +6,6 @@ library(Seurat)
 # Load seurat objects
 #####################
 seurat_grp_merged_list <- readRDS("data/ST_NB_seurat.rds")
-# seurat_grp_merged_list$NB2Pre<- NULL
 
 # Load DGE data
 ###############

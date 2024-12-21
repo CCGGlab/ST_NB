@@ -6,7 +6,6 @@ library(cowplot)
 library(CellChat)
 
 seurat_grp_merged_list <- readRDS("data/ST_NB_seurat.rds")
-# seurat_grp_merged_list$NB2Pre<- NULL
 
 # Show interaction
 ###################
@@ -42,8 +41,6 @@ for(s in c("NB2Post1", "NB2Post2")){
 ######################################
 
 cellchat<- readRDS("temp/cellchat_list_ST_sct_truncateMean_0.2_cell_type_hr_secreted_sig_only_20241209.rds")
-# cellchat<- readRDS("ST_NB_Joachim/temp/data/cellchat_list_ST_sct_truncateMean_0.2_sec_sig_only_cell_type_hr.rds") # Secreted signalling only
-# cellchat<- readRDS("ST_NB_Joachim/temp/data/cellchat_list_ST_sct_truncateMean_0.2_cell_type_hr.rds") # All interactions
 
 # Show all pathways
 pathways.show <-  cellchat$NB2Post@netP$pathways 

@@ -3,7 +3,6 @@
 
 library(clustree)
 seurat_grp_merged_list <- read_rds("data/ST_NB_seurat.rds")
-# seurat_grp_merged_list$NB2Pre<- NULL
 
 resolutions <- seq(0.1, 1.5, 0.1)
 seurat_obj_ls <- list()

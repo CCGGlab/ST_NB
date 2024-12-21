@@ -20,12 +20,6 @@ for(gs in names(PDB_Hs_ls)){
   PDB_df<- rbind(PDB_df, gs_tmp)
 }
 
-# Ha_df<- NULL
-# for(gs in names(Ha_ls)){
-#   gs_tmp<- cbind(gs, Ha_ls[[gs]])
-#   Ha_df<- rbind(Ha_df, gs_tmp)
-# }
-# 
 # Load DGE data
 ###############
 

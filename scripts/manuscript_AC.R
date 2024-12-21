@@ -5,7 +5,6 @@
 ###########
 library(Seurat)
 seurat_grp_merged_list <- read_rds("data/ST_NB_seurat.rds")
-# seurat_grp_merged_list$NB2Pre<- NULL
 
 # Plot Adrenocortical genes
 #################################

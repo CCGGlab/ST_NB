@@ -8,9 +8,6 @@ library(tidyverse)
 # Prepare input data for CelChat analysis
 seurat_grp_merged_list <- read_rds("data/ST_NB_seurat.rds")
 
-# Remove NB1Pre sample
-seurat_grp_merged_list <- seurat_grp_merged_list[-3]
-
 # set default assay to SCT
 seurat_grp_merged_list <- seurat_grp_merged_list %>% 
             map(function(seurat_obj){
