@@ -1,6 +1,5 @@
 # Libraries & functions
 #######################
-# source("../ATR/scripts/functions/ATR_functions.R")
 load("data/ST_NB.RData")
 library(reshape2)
 library(cowplot)
@@ -23,13 +22,7 @@ for(gs in names(PDB_Hs_ls)){
 # Load DGE data
 ###############
 
-DE_clust_ls<- list()
-
-for(s in c("NB1Pre","NB1Post","NB2Post")){
-  DE_clust_ls[["seurat"]][[s]]<- readxl::read_excel("temp/de_seurat_filtered.xlsx",sheet = s)  
-  DE_clust_ls[["lr"]][[s]]<- readxl::read_excel("temp/de_lr_filtered.xlsx",sheet = s)
-  DE_clust_ls[["hr"]][[s]]<- readxl::read_excel("temp/de_hr_filtered.xlsx",sheet = s)
-} 
+DE_clust_ls<- readRDS(file = "temp/DE_clust.rds")
 
 fGSEA_all_ls<- list()
 fGSEA_ls<- list()
@@ -78,5 +71,33 @@ save(fGSEA_all_ls, fGSEA_ls, file = "results/data/fGSEA_clusters.RData")
 # View(fGSEA_all_ls$Rea_df$hr$NB2Post$FZ_like)   
 # 
 # View(fGSEA_all_ls$Ha_df$hr$NB1Post$NE4)   
+
+
+# names(fGSEA_all_ls$PDB_df$lr$NB2Post)<- gsub("FZ_like", "AC_like", names(fGSEA_all_ls$PDB_df$lr$NB2Post))
+# names(fGSEA_all_ls$PDB_df$hr$NB2Post)<- gsub("FZ_like", "AC_like", names(fGSEA_all_ls$PDB_df$hr$NB2Post))
+# names(fGSEA_all_ls$Rea_df$lr$NB2Post)<- gsub("FZ_like", "AC_like", names(fGSEA_all_ls$Rea_df$lr$NB2Post))
+# names(fGSEA_all_ls$Rea_df$hr$NB2Post)<- gsub("FZ_like", "AC_like", names(fGSEA_all_ls$Rea_df$hr$NB2Post))
+# names(fGSEA_all_ls$Ha_df$lr$NB2Post)<- gsub("FZ_like", "AC_like", names(fGSEA_all_ls$Ha_df$lr$NB2Post))
+# names(fGSEA_all_ls$Ha_df$hr$NB2Post)<- gsub("FZ_like", "AC_like", names(fGSEA_all_ls$Ha_df$hr$NB2Post))
+# 
+# colnames(fGSEA_ls$PDB_df$lr$NB2Post$padj)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$PDB_df$lr$NB2Post$padj))
+# colnames(fGSEA_ls$PDB_df$lr$NB2Post$NES)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$PDB_df$lr$NB2Post$NES))
+# colnames(fGSEA_ls$PDB_df$lr$NB2Post$LE)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$PDB_df$lr$NB2Post$LE))
+# colnames(fGSEA_ls$Rea_df$lr$NB2Post$padj)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$Rea_df$lr$NB2Post$padj))
+# colnames(fGSEA_ls$Rea_df$lr$NB2Post$NES)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$Rea_df$lr$NB2Post$NES))
+# colnames(fGSEA_ls$Rea_df$lr$NB2Post$LE)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$Rea_df$lr$NB2Post$LE))
+# colnames(fGSEA_ls$Ha_df$lr$NB2Post$padj)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$Ha_df$lr$NB2Post$padj))
+# colnames(fGSEA_ls$Ha_df$lr$NB2Post$NES)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$Ha_df$lr$NB2Post$NES))
+# colnames(fGSEA_ls$Ha_df$lr$NB2Post$LE)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$Ha_df$lr$NB2Post$LE))
+# colnames(fGSEA_ls$PDB_df$hr$NB2Post$padj)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$PDB_df$hr$NB2Post$padj))
+# colnames(fGSEA_ls$PDB_df$hr$NB2Post$NES)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$PDB_df$hr$NB2Post$NES))
+# colnames(fGSEA_ls$PDB_df$hr$NB2Post$LE)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$PDB_df$hr$NB2Post$LE))
+# colnames(fGSEA_ls$Rea_df$hr$NB2Post$padj)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$Rea_df$hr$NB2Post$padj))
+# colnames(fGSEA_ls$Rea_df$hr$NB2Post$NES)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$Rea_df$hr$NB2Post$NES))
+# colnames(fGSEA_ls$Rea_df$hr$NB2Post$LE)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$Rea_df$hr$NB2Post$LE))
+# colnames(fGSEA_ls$Ha_df$hr$NB2Post$padj)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$Ha_df$hr$NB2Post$padj))
+# colnames(fGSEA_ls$Ha_df$hr$NB2Post$NES)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$Ha_df$hr$NB2Post$NES))
+# colnames(fGSEA_ls$Ha_df$hr$NB2Post$LE)<- gsub("FZ_like", "AC_like", colnames(fGSEA_ls$Ha_df$hr$NB2Post$LE))
+
 
 

@@ -139,7 +139,7 @@ for(clust in c("seurat", "lr", "hr")){
   p_fGSEA_dotplot_ls[[clust]]<- p
 }
 
-ggsave("results/figs/manuscript_figS2_fGSEA.pdf", p_fGSEA_dotplot_ls$seurat, width = 178, height = 0.45*265, units = "mm")
+ggsave("results/figs/manuscript_figS2D_fGSEA.pdf", p_fGSEA_dotplot_ls$seurat, width = 178, height = 0.45*265, units = "mm")
 
 # Get leading edges for each cluster (to be used in dotplots)
 
@@ -193,22 +193,24 @@ Macro_2 # CD68, TYROBP, CD74, SLC11A1, FGR
 # [15] "GPNMB"   "ITGAX"   "LGALS3"  "LILRA5"  "MS4A6A"  "NR4A3"   "RAB20"  
 # [22] "S100A4"  "S100A8"  "SAMSN1"  "SLC11A1" "TYROBP"  "UCP2"   
 
-# FZ-like
+# AC-like
 
 # Plot specific RS plots
 #########################
 
+DE_clust_ls<- readRDS(file = "temp/DE_clust.rds")
 s<- "NB2Post"
 
-# Plot running score FZ like
-DE_res<- readxl::read_excel("temp/de_hr_filtered.xlsx",sheet = s)
+# Plot running score AC like
+# DE_res<- readxl::read_excel("temp/de_hr_filtered.xlsx",sheet = s)
+DE_res<- DE_clust_ls$hr[[s]]
 DE_res$p_val[DE_res$p_val==0]<- min(DE_res$p_val[DE_res$p_val!=0])/10
 DE_res<- DE_res[order(DE_res$p_val, -1*DE_res$avg_log2FC),]
-stat<- -log10(DE_res$p_val[DE_res$cluster=="FZ_like"])
-names(stat)<- DE_res$gene[DE_res$cluster=="FZ_like"]
+stat<- -log10(DE_res$p_val[DE_res$cluster=="AC_like"])
+names(stat)<- DE_res$gene[DE_res$cluster=="AC_like"]
 
 gs_name<- "REACTOME_METABOLISM_OF_STEROIDS"
-p_pw<- signif(fGSEA_all_ls$Rea_df$hr$NB2Post$FZ_like$p.adjust[fGSEA_all_ls$Rea_df$hr$NB2Post$FZ_like$Description==gs_name],3)
+p_pw<- signif(fGSEA_all_ls$Rea_df$hr$NB2Post$AC_like$p.adjust[fGSEA_all_ls$Rea_df$hr$NB2Post$AC_like$Description==gs_name],3)
 p1<- plotEnrichment(Rea_ls[[gs_name]],stat) +
   ggtitle(paste0(gs_name,"\n(Padj=",p_pw,")")) + 
   # geom_line(size=0.5, col="green") +
@@ -226,7 +228,7 @@ p1<- plotEnrichment(Rea_ls[[gs_name]],stat) +
   scale_y_continuous(name = "Enrichment Score", limits = c(-0.1,0.8))
 
 gs_name<- "REACTOME_METABOLISM_OF_STEROID_HORMONES"
-p_pw<- signif(fGSEA_all_ls$Rea_df$hr$NB2Post$FZ_like$p.adjust[fGSEA_all_ls$Rea_df$hr$NB2Post$FZ_like$Description==gs_name],3)
+p_pw<- signif(fGSEA_all_ls$Rea_df$hr$NB2Post$AC_like$p.adjust[fGSEA_all_ls$Rea_df$hr$NB2Post$AC_like$Description==gs_name],3)
 p2<- plotEnrichment(Rea_ls[[gs_name]],stat) +
   ggtitle(paste0(gs_name,"\n(Padj=",p_pw,")")) + 
   # geom_line(size=0.5, col="green") +
@@ -248,7 +250,7 @@ p<- plot_grid(
   p2,
   ncol= 1
 )
-ggsave("results/figs/manuscript_fig2_RS.pdf", p, width = 0.2*178, height = 0.3*265, units = "mm")
+ggsave("results/figs/manuscript_fig2A_RS.pdf", p, width = 0.2*178, height = 0.3*265, units = "mm")
 
 # Save in xls
 #############

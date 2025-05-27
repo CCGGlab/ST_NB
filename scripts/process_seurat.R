@@ -367,9 +367,44 @@ seurat_grp_merged_list <- seurat_grp_merged_list %>% map(function(seurat_obj){
 
 })
 
-saveRDS("data/ST_NB_seurat.rds")
+# FZ_like annotation renamed to AC_like
+############################################
+for(s in names(seurat_grp_merged_list)){
+  for(c in c("cell_type_lr", "cell_type_hr")){
+    seurat_grp_merged_list[[s]][[c]][,1]<- revalue(seurat_grp_merged_list[[s]][[c]][,1], c("FZ_like" = "AC_like"))
+  }
+} 
 
+# Add inferCNVResults
+########################
+CNV<- rbind(
+  readRDS("temp/inferCNV/cell_type_hr/v4/meta_data_NBLU01.rds"),
+  readRDS("temp/inferCNV/cell_type_hr/v4/meta_data_NBLU02.rds")
+)
+CNV<- CNV[!is.na(CNV$barcode),]
+rownames(CNV)<- paste0(CNV$orig.ident, "_", CNV$barcode)
 
+# Scores
+for(s in names(seurat_grp_merged_list)){
+  seurat_grp_merged_list[[s]]<- AddMetaData(seurat_grp_merged_list[[s]], CNV, 'inferCNV_cell_type_hr_has_cnv')  
+}
+
+# 11p
+for(s in names(seurat_grp_merged_list)){
+  seurat_grp_merged_list[[s]]<- AddMetaData(seurat_grp_merged_list[[s]], CNV, 'inferCNV_cell_type_hr_proportion_cnv_11p')  
+}
+
+# Add NBAtlas NE deconvolution results
+########################################
+load("data/ST_NB.RData")
+for(s in names(seurat_grp_merged_list)){
+  meta_tmp<- NBAtlas_deconv[names(seurat_grp_merged_list[[s]]$orig.ident),]
+  seurat_grp_merged_list[[s]]<- AddMetaData(object = seurat_grp_merged_list[[s]], metadata = meta_tmp, col.name = "RCTD_NBAtlas_full_Neuroendocrine")
+}
+
+# Save
+#######
+saveRDS(object = seurat_grp_merged_list, file = "data/ST_NB_seurat.rds")
 
 
 

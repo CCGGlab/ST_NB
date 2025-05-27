@@ -7,18 +7,29 @@ library(Seurat)
 #####################
 seurat_grp_merged_list <- readRDS("data/ST_NB_seurat.rds")
 
-# Load DGE data
-###############
+# DGE
+#####
 DE_clust_ls<- list()
+for(s in names(seurat_grp_merged_list)){
+  for(c in c("seurat_clusters", "cell_type_lr", "cell_type_hr")){
+    seurat_obj<- seurat_grp_merged_list[[s]]
+    Idents(seurat_obj) <- c
+    de_markers <- FindAllMarkers(seurat_obj, assay = "SCT",
+                                 min.pct = 0.2, 
+                                 only.pos = TRUE, 
+                                 logfc.threshold = 0.25)
+    DE_clust_ls[[c]][[s]]<-  de_markers
+  }
+}
+names(DE_clust_ls)<- gsub("_clusters|cell_type_", "", names(DE_clust_ls))
 
-for(s in c("NB1Pre","NB1Post","NB2Post")){
-  DE_clust_ls[["seurat"]][[s]]<- readxl::read_excel("temp/de_seurat_filtered.xlsx",sheet = s)  
-  DE_clust_ls[["lr"]][[s]]<- readxl::read_excel("temp/de_lr_filtered.xlsx",sheet = s)
-  DE_clust_ls[["hr"]][[s]]<- readxl::read_excel("temp/de_hr_filtered.xlsx",sheet = s)
-} 
+# Save DGE results
+saveRDS(object = DE_clust_ls, file = "temp/DE_clust.rds")
 
 # Create dotplot
 ################
+DE_clust_ls<- readRDS(file = "temp/DE_clust.rds")
+
 
 # Select 5 genes for each cluster from leading edges (in as many as possible)
 LE_gene_markers<- list(
@@ -28,20 +39,20 @@ LE_gene_markers<- list(
   Schwann = c("SOX10", "PLP1", "S100B","MPZ", "SEMA3B"),
   Endo = c("CAV1", "MCAM", "CLDN5", "HSPG2", "CLIC4"),
   Macro = c("CD68", "TYROBP", "CD74", "SLC11A1", "FGR"),
-  FZ_like = c("NR5A1","CYB5B","CYP11B1","STAR", "ALKAL2")
+  AC_like = c("NR5A1","CYB5B","CYP11B1","STAR", "ALKAL2")
 )
 
 # Dotplot for lr clusters 
 p<- custom_dotplot(seurat_list = seurat_grp_merged_list, seurat_cluster_feature = "cell_type_lr", marker_gene_list = LE_gene_markers, radius_size = 1, dot.scale = 1.5, col.min = -2.5, col.max = 2.5)
-ggsave("results/figs/manuscript_fig1_dotplots.pdf", p, width = .3*178, height = 0.4*265, units = "mm")
+ggsave("results/figs/manuscript_fig1D_dotplots.pdf", p, width = .3*178, height = 0.4*265, units = "mm")
 
 # Dotplot for seurat  clusters
 p<- custom_dotplot(seurat_list = seurat_grp_merged_list, seurat_cluster_feature = "seurat_clusters", marker_gene_list = LE_gene_markers, radius_size = 1, dot.scale = 1.5, col.min = -2.5, col.max = 2.5, isMainPlot = F)
 ggsave("results/figs/manuscript_figS2_dotplots.pdf", p, width = .5*178, height = 0.4*265, units = "mm")
 
-# Dotplot for hr clusters
-p<- custom_dotplot(seurat_list = seurat_grp_merged_list, seurat_cluster_feature = "cell_type_hr", marker_gene_list = LE_gene_markers, radius_size = 1, dot.scale = 1.5, col.min = -2.5, col.max = 2.5, isMainPlot = F)
-ggsave("results/figs/manuscript_figS4_dotplots_hr.pdf", p, width = .4*178, height = 0.4*265, units = "mm")
+# # Dotplot for hr clusters
+# p<- custom_dotplot(seurat_list = seurat_grp_merged_list, seurat_cluster_feature = "cell_type_hr", marker_gene_list = LE_gene_markers, radius_size = 1, dot.scale = 1.5, col.min = -2.5, col.max = 2.5, isMainPlot = F)
+# ggsave("results/figs/manuscript_figS4_dotplots_hr.pdf", p, width = .4*178, height = 0.4*265, units = "mm")
 
 # Create dotplot for NE subclone-specific clusters
 ###########################################
@@ -63,7 +74,10 @@ for(s in c("NB1Pre","NB1Post","NB2Post")){
   }
 }
 p<- custom_dotplot(seurat_list = seurat_grp_merged_list, seurat_cluster_feature = "cell_type_hr", marker_gene_list = genes_sel_ls, radius_size = 1, dot.scale = 1.5, col.min = -2.5, col.max = 2.5, isMainPlot = F, cluster_subset = c("NE1", "NE2", "NE3", "NE4"))
-ggsave("results/figs/manuscript_figS4_dotplots_hr_NE_1.pdf", p, width = .4*178, height = 0.6*265, units = "mm")
+ggsave("results/figs/manuscript_figS4_dotplots.pdf", p, width = .4*178, height = 0.6*265, units = "mm")
+
+# p<- custom_dotplot(seurat_list = seurat_grp_merged_list, seurat_cluster_feature = "seurat_clusters", marker_gene_list = genes_sel_ls, radius_size = 1, dot.scale = 1.5, col.min = -2.5, col.max = 2.5, isMainPlot = F, cluster_subset = paste0("C",c(0, 3, 4, 2, 9, 8, 1, 5, 6, 7, 10)))
+# ggsave("results/figs/manuscript_figS4_dotplots_hr_NE_1.pdf", p, width = .4*178, height = 0.6*265, units = "mm")
 
 # Save data to suppl table
 #############################
@@ -97,8 +111,10 @@ DE_df_ls$caption<- as.data.frame(
 )
 
 for(cond in c("NB1Pre","NB1Post","NB2Post")){
-  s<- do.call("cbind", DE_clust_ls[["seurat"]][[cond]])
-  h<- do.call("cbind", DE_clust_ls[["hr"]][[cond]])
+  # s<- do.call("cbind", DE_clust_ls[["seurat"]][[cond]])
+  # h<- do.call("cbind", DE_clust_ls[["hr"]][[cond]])
+  s<- DE_clust_ls[["seurat"]][[cond]]
+  h<- DE_clust_ls[["hr"]][[cond]]
   df_tmp<- rbind(s,h)
   df_tmp<- df_tmp[,c("gene", "cluster", "p_val", "avg_log2FC", "pct.1", "pct.2", "p_val_adj")]
   DE_df_ls[[cond]]<- as.data.frame(df_tmp)

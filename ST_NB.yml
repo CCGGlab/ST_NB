@@ -26,5 +26,6 @@ dependencies:
 - bioconductor-singscore
 - r-ggblend
 - r-cairo
+# - bioconductor-clusterfoldsimilarity
 
  

@@ -1,6 +1,9 @@
 # Load & process adrenal development data
 ############################################
-eset<- readRDS("temp/mtab_5525.rds")
+library(tidyverse)
+library(cowplot)
+
+eset<- readRDS("temp/mtab_5525.rds") # Data derived from Array Express E-MTAB-5525
 
 genes = fData(eset)$gene
 .expression = exprs(eset)

@@ -66,6 +66,16 @@ p<- plot_grid(
 
 ggsave("results/figs/manuscript_basic_clustering.pdf", width = 178, height = 0.6*265, units = "mm")
 
+# Png of cluster only
+p<- plot_grid(
+  clustree_ls$NB1Pre$umap + theme_void() + theme(legend.position = "none"), 
+  clustree_ls$NB1Post$umap + theme_void() + theme(legend.position = "none"), 
+  clustree_ls$NB2Post$umap + theme_void() + theme(legend.position = "none"),
+  ncol = 3,
+  rel_heights = c(1,1)
+)
+ggsave("results/figs/manuscript_basic_clustering.png", width = 178/2, height = 265/8, scale = 1.5, units = "mm", dpi = 600)
+
 # clustree_ls$NB1Pre$withLabels
 # clustree_ls$NB1Post$withLabels
 # clustree_ls$NB2Post$withLabels

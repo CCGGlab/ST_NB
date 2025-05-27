@@ -32,7 +32,10 @@ custom_dotplot<- function(seurat_list, seurat_cluster_feature, marker_gene_list,
   if(isMainPlot) expr_df$cluster<- factor(expr_df$cluster, levels = names(marker_gene_list))
   expr_df$gene_class<- paste0("Markers ", expr_df$gene_class)
   expr_df$gene_class<- factor(expr_df$gene_class, levels = paste0("Markers ", names(marker_gene_list)))
-  if(!is.null(cluster_subset)) expr_df<- expr_df[expr_df$cluster%in%cluster_subset,]
+  if(!is.null(cluster_subset)){
+    expr_df<- expr_df[expr_df$cluster%in%cluster_subset,]
+    expr_df$cluster<- factor(expr_df$cluster, levels = cluster_subset)
+  } 
   
   # Plot
   ggplot(data = expr_df, mapping = aes_string(x = "cluster", y = "gene")) + 

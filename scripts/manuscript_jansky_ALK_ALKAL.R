@@ -1,4 +1,6 @@
 library(cowplot)
+library(Seurat)
+library(reshape)
 
 # Load Jansky seurat objects
 #############################
